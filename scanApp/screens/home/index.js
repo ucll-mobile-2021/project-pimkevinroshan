@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
+import Constants from 'expo-constants';
 
 const styles = StyleSheet.create({
     container: {
@@ -16,17 +18,25 @@ const HomeScreen = ({navigation}) => {
                 <Text
                     {...props}
                     style={{color: 'white', fontWeight: 'bold'}}>
-                    Custom Title
+                    Betalingscode
                 </Text>
             ),
             headerStyle: {
-                backgroundColor: '#f4511e', //Set Header color
+                backgroundColor: '#fe0127', //Set Header color
             },
         });
     }, [navigation]);
+    let logoFromFile = require('../../assets/delhaize.png');
     return (
         <View style={styles.container}>
-            <Text>Protected Home Screen</Text>
+            <QRCode
+                logo={logoFromFile}
+                logoSize={100}
+                logoBackgroundColor='transparent'
+                backgroundColor = 'transparent'
+                value={Constants.installationId}
+                size={300}
+            />
         </View>
     );
 };

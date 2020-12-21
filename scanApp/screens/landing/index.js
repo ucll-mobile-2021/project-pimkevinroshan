@@ -22,8 +22,8 @@ const LandingScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('Scanner')}
             />
             <Button
-                title="Go to Home"
-                onPress={() => navigation.navigate('Home')}
+                title="Go to Payment Code"
+                onPress={() => navigation.navigate('Payment')}
             />
         </View>
     );

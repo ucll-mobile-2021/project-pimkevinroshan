@@ -54,7 +54,7 @@ const App = () => {
                         }
                     }}
                 />
-                <RootStack.Screen name="Home" component={HomeScreen}/>
+                <RootStack.Screen name="Payment" component={HomeScreen}/>
             </RootStack.Navigator>
         </NavigationContainer>
     );
