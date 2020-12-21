@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Constants from 'expo-constants';
+import { Dimensions } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -35,7 +36,7 @@ const HomeScreen = ({navigation}) => {
                 logoBackgroundColor='transparent'
                 backgroundColor = 'transparent'
                 value={Constants.installationId}
-                size={300}
+                size={Dimensions.get('window').width-30}
             />
         </View>
     );
