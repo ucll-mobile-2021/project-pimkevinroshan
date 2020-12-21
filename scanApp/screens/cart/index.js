@@ -19,7 +19,8 @@ export default class CartScreen extends React.Component {
 
   async deleteFromCart(barcode) {
     const temp = await delAjax.deleteItem(barcode);
-    alert(temp)
+    const cart = await ajax.fetchCart();
+    this.setState({ cart });
   }
 
   render() {
