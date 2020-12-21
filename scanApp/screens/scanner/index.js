@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import HomeScreen from "../home";
+import ajax from './fetchProduct';
 
 const ScannerScreen = ({ navigation }) => {
     const [hasPermission, setHasPermission] = useState(null);
@@ -14,9 +14,14 @@ const ScannerScreen = ({ navigation }) => {
         })();
     }, []);
 
-    const handleBarCodeScanned = ({ type, data }) => {
+    const handleBarCodeScanned = async ({ type, data }) => {
         setScanned(true);
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+        const product = await ajax.fetchProduct(data);
+        if (product.description != null) {
+            alert(`${product.description} succesvol gescand! Prijs: €${product.price}`);
+        } else {
+            alert(`Product onbekend!`)
+        }
     };
 
     if (hasPermission === null) {
@@ -32,7 +37,7 @@ const ScannerScreen = ({ navigation }) => {
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                 style={StyleSheet.absoluteFillObject}
             />
-            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+            {scanned && <Button title={'Nog een product scannen!'} onPress={() => setScanned(false)} />}
         </View>
     );
 };
