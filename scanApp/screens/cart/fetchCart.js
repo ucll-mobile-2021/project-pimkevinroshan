@@ -1,12 +1,12 @@
 // FetchCart.js
 
-const URI = 'http://mobiele.kc-productions.org/personalCart.php';
+const URI = 'http://mobiele.kc-productions.org/personalCart.php?userID=';
 
 export default {
-    async fetchCart() {
+    async fetchCart(userID) {
         try {
-            let response = await fetch(URI);
-            console.log("DA" + response)
+            let url = URI + userID;
+            let response = await fetch(url);
             let responseJsonData = await response.json();
             return responseJsonData;
         }

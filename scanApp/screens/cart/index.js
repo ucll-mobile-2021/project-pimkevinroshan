@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, FlatList, Image, Text, Pressable } from "react-native";
+import Constants from 'expo-constants';
 import ajax from "./fetchCart";
 import delAjax from "./deleteItem";
 
@@ -13,13 +14,13 @@ export default class CartScreen extends React.Component {
   };
 
   async componentDidMount() {
-    const cart = await ajax.fetchCart();
+    const cart = await ajax.fetchCart(Constants.installationId);
     this.setState({ cart });
   }
 
   async deleteFromCart(barcode) {
-    const temp = await delAjax.deleteItem(barcode);
-    const cart = await ajax.fetchCart();
+    const temp = await delAjax.deleteItem(Constants.installationId, barcode);
+    const cart = await ajax.fetchCart(Constants.installationId);
     this.setState({ cart });
   }
 

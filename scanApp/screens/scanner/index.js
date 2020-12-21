@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import Constants from 'expo-constants';
 import ajax from './fetchProduct';
 
 const ScannerScreen = ({ navigation }) => {
@@ -16,7 +17,7 @@ const ScannerScreen = ({ navigation }) => {
 
     const handleBarCodeScanned = async ({ type, data }) => {
         setScanned(true);
-        const product = await ajax.fetchProduct(data);
+        const product = await ajax.fetchProduct(Constants.installationId, data);
         if (product.description != null) {
             alert(`${product.description} succesvol gescand! Prijs: €${product.price}`);
         } else {
