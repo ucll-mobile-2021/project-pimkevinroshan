@@ -1,12 +1,9 @@
-// FetchCart.js
-
-const URI = 'http://mobiele.kc-productions.org/personalCart.php';
+const URI = 'http://mobiele.kc-productions.org/deleteItem.php';
 
 export default {
-    async fetchCart() {
+    async deleteItem(barcode) {
         try {
-            let response = await fetch(URI);
-            console.log("DA" + response)
+            let response = await fetch(URI, {method: "DELETE", body: {itemID: barcode}});
             let responseJsonData = await response.json();
             return responseJsonData;
         }
