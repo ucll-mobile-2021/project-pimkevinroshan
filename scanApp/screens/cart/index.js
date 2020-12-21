@@ -9,6 +9,8 @@ import {
 import ajax from './fetchCart';
 
 const basketIcon = require('./basket.png');
+const trashIcon = require('./trash.png');
+
 
 export default class CartScreen extends React.Component {
     state = {
@@ -38,6 +40,9 @@ export default class CartScreen extends React.Component {
                                 <Text style={styles.items}>{item.items} stuk</Text>
                                 }
                                 <Text style={styles.description}>{item.description}</Text>
+                            </View>
+                            <View style={styles.trashIconContainer}>
+                                <Image source={trashIcon} style={styles.icon}/>
                             </View>
                             <View style={styles.total}>
                                 <Text style={styles.unitprice}>{item.unitprice}</Text>
@@ -84,6 +89,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 50,
         width: 50,
+    },
+    trashIconContainer: {
+        alignItems: 'center',
+        backgroundColor: 'black',
+        borderColor: 'black',
+        borderRadius: 20,
+        borderWidth: 1,
+        justifyContent: 'center',
+        height: 35,
+        width: 35,
+        right: 10,
     },
     icon: {
         tintColor: '#fff',
