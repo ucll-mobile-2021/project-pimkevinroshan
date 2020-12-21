@@ -41,7 +41,6 @@ export default class CartScreen extends React.Component {
                 )}
                 <Text style={styles.description}>{item.description}</Text>
               </View>
-     
               <Pressable onPress={() => this.deleteFromCart(item.barcode)}>
                 <View style={styles.trashIconContainer}>
                   <Image source={trashIcon} style={styles.icon}></Image>
