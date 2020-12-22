@@ -12,21 +12,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const HomeScreen = ({navigation}) => {
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerTitle: (props) => (
-                <Text
-                    {...props}
-                    style={{color: 'white', fontWeight: 'bold'}}>
-                    Betalingscode
-                </Text>
-            ),
-            headerStyle: {
-                backgroundColor: '#fe0127', //Set Header color
-            },
-        });
-    }, [navigation]);
+const HomeScreen = ({}) => {
     let logoFromFile = require('../../assets/delhaize.png');
     return (
         <View style={styles.container}>
