@@ -1,17 +1,24 @@
 import React, { Component } from "react";
-import { StyleSheet, View, FlatList, Image, Text, Pressable } from "react-native";
+import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from "react-native";
 import Constants from 'expo-constants';
 import ajax from "./fetchCart";
 import delAjax from "./deleteItem";
+import updateOneQuantityAjax from "./updateQuantityByOne";
 
 const basketIcon = require("./basket.png");
-const trashIcon = require("./trash.png");
+const plusIcon = require("./plus.png");
+const minusIcon = require("./minus.png");
 
 export default class CartScreen extends React.Component {
 
-  state = {
-    cart: [],
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+        modalVisible: false,
+        cart: [],
+    }
+  }
+
 
   async componentDidMount() {
     const cart = await ajax.fetchCart(Constants.installationId);
@@ -24,33 +31,53 @@ export default class CartScreen extends React.Component {
     this.setState({ cart });
   }
 
+  async deleteOneFromCart(barcode, productID, quantity) {
+    if (quantity === 1) {
+      this.deleteFromCart(barcode);
+    } else {
+      const temp = await updateOneQuantityAjax.updateOneQuantityItem(Constants.installationId, productID, quantity - 1);
+      const cart = await ajax.fetchCart(Constants.installationId);
+      this.setState({ cart });
+    }
+  }
+
+  async addOneItem(productID, quantity) {
+    const temp = await updateOneQuantityAjax.updateOneQuantityItem(Constants.installationId, productID, quantity + 1);
+    const cart = await ajax.fetchCart(Constants.installationId);
+    this.setState({ cart });
+  }
+
   render() {
     return (
       <View style={styles.mainContainer}>
         <FlatList
           data={this.state.cart}
           renderItem={({ item }) => (
-            <View style={styles.row}>
-              <View style={styles.iconContainer}>
-                <Image source={basketIcon} style={styles.icon} />
-              </View>
-              <View style={styles.info}>
-                {item.items > 1 && (
-                  <Text style={styles.items}>{item.items} stuks</Text>
-                )}
-                {item.items < 2 && (
-                  <Text style={styles.items}>{item.items} stuk</Text>
-                )}
-                <Text style={styles.description}>{item.description}</Text>
-              </View>
-              <Pressable onPress={() => this.deleteFromCart(item.barcode)}>
-                <View style={styles.trashIconContainer}>
-                  <Image source={trashIcon} style={styles.icon}></Image>
+            <View> 
+              <View style={styles.row}>
+                <View style={styles.iconContainer}>
+                  <Image source={basketIcon} style={styles.icon} />
                 </View>
-              </Pressable>
-              <View style={styles.total}>
-                <Text style={styles.unitprice}>{item.unitprice}</Text>
-                <Text style={styles.price}>€{item.total}</Text>
+                
+                <View style={styles.info}>
+                  {item.items > 1 && (
+                    <Text style={styles.items}>{item.items} stuks</Text>
+                  )}
+                  {item.items < 2 && (
+                    <Text style={styles.items}>{item.items} stuk</Text>
+                  )}
+                  <Text style={styles.description}>{item.description}</Text>
+                </View>
+                <TouchableOpacity onPress = {() => { this.addOneItem(item.id, item.items) }} style={styles.addOneTouchable}>
+                  <Image source={plusIcon} style={styles.plusIcon}></Image>
+                </TouchableOpacity>
+                <TouchableOpacity onPress = {() => { this.deleteOneFromCart(item.barcode, item.id, item.items) }} style={styles.deleteOneTouchable}>
+                  <Image source={minusIcon} style={styles.minusIcon}></Image>
+                </TouchableOpacity>
+                <View style={styles.total}>
+                  <Text style={styles.unitprice}>{item.unitprice}</Text>
+                  <Text style={styles.price}>€{item.total}</Text>
+                </View>
               </View>
             </View>
           )}
@@ -60,9 +87,25 @@ export default class CartScreen extends React.Component {
     );
   }
 }
+/*
+<TouchableOpacity onPress = {() => {this.setState({ modalVisible: true})}}>
+                <View style={styles.optionsIconContainer}>
+                  <Image source={trashIcon} style={styles.optionsIcon}></Image>
+                </View>
+              </TouchableOpacity>
+*/ 
 
-
+//onPress={() => this.deleteFromCart(item.barcode)}
 const styles = StyleSheet.create({
+  modal: {
+    margin: 0,
+    backgroundColor: 'white',
+    height: 200,
+    flex: 0,
+    top: '35%',
+    position: 'absolute',
+    width: '100%'
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: "#fff",
@@ -95,21 +138,31 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
   },
-  trashIconContainer: {
-    alignItems: "center",
-    backgroundColor: "black",
-    borderColor: "black",
-    borderRadius: 20,
-    borderWidth: 1,
-    justifyContent: "center",
-    height: 35,
-    width: 35,
-    right: 10,
-  },
   icon: {
     tintColor: "#fff",
     height: 22,
     width: 22,
+  },
+  addOneTouchable: {
+    left: 34,
+    bottom: 10,
+  },
+  plusIcon: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 38,
+    width: 38,
+
+  },
+  deleteOneTouchable: {
+    right: 3,
+    top: 35,
+  },
+  minusIcon: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 38,
+    width: 38,
   },
   info: {
     flex: 1,
@@ -124,6 +177,7 @@ const styles = StyleSheet.create({
   description: {
     color: "#777676",
     fontSize: 14,
+    width: '160%'
   },
   total: {
     width: 100,
@@ -138,5 +192,5 @@ const styles = StyleSheet.create({
     color: "#1cad61",
     fontSize: 25,
     fontWeight: "bold",
-  },
+  }
 });
