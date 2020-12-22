@@ -4,10 +4,15 @@ import Constants from 'expo-constants';
 import ajax from "./fetchCart";
 import delAjax from "./deleteItem";
 import updateOneQuantityAjax from "./updateQuantityByOne";
+//import { GestureHandler } from 'expo'
+//import * as Swipeable from 'react-native-gesture-handler';
+//import SwipeItem from "./swipeable";
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 const basketIcon = require("./basket.png");
 const plusIcon = require("./plus.png");
 const minusIcon = require("./minus.png");
+const trashIcon = require("./trash.png");
 
 export default class CartScreen extends React.Component {
 
@@ -18,7 +23,6 @@ export default class CartScreen extends React.Component {
         cart: [],
     }
   }
-
 
   async componentDidMount() {
     const cart = await ajax.fetchCart(Constants.installationId);
@@ -54,31 +58,40 @@ export default class CartScreen extends React.Component {
           data={this.state.cart}
           renderItem={({ item }) => (
             <View> 
-              <View style={styles.row}>
-                <View style={styles.iconContainer}>
-                  <Image source={basketIcon} style={styles.icon} />
+              <Swipeable
+                renderRightActions={() => {  return (
+                  <TouchableOpacity onPress = {() => { this.deleteFromCart(item.barcode)}} style={styles.swipeDelete}>
+                    <Image source={trashIcon} style={styles.trashIcon}></Image>
+                  </TouchableOpacity>
+                  )  
+                }}
+              >
+                <View style={styles.row}>
+                  <View style={styles.iconContainer}>
+                    <Image source={basketIcon} style={styles.icon} />
+                  </View>
+                  
+                  <View style={styles.info}>
+                    {item.items > 1 && (
+                      <Text style={styles.items}>{item.items} stuks</Text>
+                    )}
+                    {item.items < 2 && (
+                      <Text style={styles.items}>{item.items} stuk</Text>
+                    )}
+                    <Text style={styles.description}>{item.description}</Text>
+                  </View>
+                  <TouchableOpacity onPress = {() => { this.addOneItem(item.id, item.items) }} style={styles.addOneTouchable}>
+                    <Image source={plusIcon} style={styles.plusIcon}></Image>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress = {() => { this.deleteOneFromCart(item.barcode, item.id, item.items) }} style={styles.deleteOneTouchable}>
+                    <Image source={minusIcon} style={styles.minusIcon}></Image>
+                  </TouchableOpacity>
+                  <View style={styles.total}>
+                    <Text style={styles.unitprice}>{item.unitprice}</Text>
+                    <Text style={styles.price}>€{item.total}</Text>
+                  </View>
                 </View>
-                
-                <View style={styles.info}>
-                  {item.items > 1 && (
-                    <Text style={styles.items}>{item.items} stuks</Text>
-                  )}
-                  {item.items < 2 && (
-                    <Text style={styles.items}>{item.items} stuk</Text>
-                  )}
-                  <Text style={styles.description}>{item.description}</Text>
-                </View>
-                <TouchableOpacity onPress = {() => { this.addOneItem(item.id, item.items) }} style={styles.addOneTouchable}>
-                  <Image source={plusIcon} style={styles.plusIcon}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress = {() => { this.deleteOneFromCart(item.barcode, item.id, item.items) }} style={styles.deleteOneTouchable}>
-                  <Image source={minusIcon} style={styles.minusIcon}></Image>
-                </TouchableOpacity>
-                <View style={styles.total}>
-                  <Text style={styles.unitprice}>{item.unitprice}</Text>
-                  <Text style={styles.price}>€{item.total}</Text>
-                </View>
-              </View>
+              </Swipeable>
             </View>
           )}
           keyExtractor={(item) => item.barcode}
@@ -87,6 +100,8 @@ export default class CartScreen extends React.Component {
     );
   }
 }
+
+
 /*
 <TouchableOpacity onPress = {() => {this.setState({ modalVisible: true})}}>
                 <View style={styles.optionsIconContainer}>
@@ -152,7 +167,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 38,
     width: 38,
-
   },
   deleteOneTouchable: {
     right: 3,
@@ -192,5 +206,15 @@ const styles = StyleSheet.create({
     color: "#1cad61",
     fontSize: 25,
     fontWeight: "bold",
+  },
+  swipeDelete: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red",
+    width: 100,
+  },
+  trashIcon: {
+    height: 60,
+    width: 60,
   }
 });
