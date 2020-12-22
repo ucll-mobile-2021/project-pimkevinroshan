@@ -4,7 +4,6 @@ export default {
     async deleteItem(userID, barcode) {
         try {
             let url = URI + barcode + "&userID=" + userID;
-            console.log(url);
             let response = await fetch(url);
             let responseJsonData = await response.json();
             return responseJsonData;
