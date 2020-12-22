@@ -1,10 +1,11 @@
-const URI = 'http://mobiele.kc-productions.org/deleteItemFromCart.php?itemID=';
+// addToCart.js
+
+const URI = 'http://mobiele.kc-productions.org/addToCart.php?productID=';
 
 export default {
-    async deleteItem(userID, barcode) {
+    async addToCart(userID, productID, quantity) {
         try {
-            let url = URI + barcode + "&userID=" + userID;
-            console.log(url);
+            let url = URI + productID + "&quantity=" + quantity + "&userID=" + userID;
             let response = await fetch(url);
             let responseJsonData = await response.json();
             return responseJsonData;

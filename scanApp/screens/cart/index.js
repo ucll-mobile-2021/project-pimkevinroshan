@@ -126,7 +126,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   total: {
-    width: 80,
+    width: 100,
+    paddingRight: 5,
+    alignItems: 'flex-end'
   },
   unitprice: {
     fontSize: 12,
