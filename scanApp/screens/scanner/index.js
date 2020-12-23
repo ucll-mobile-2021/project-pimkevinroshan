@@ -20,6 +20,7 @@ import TopBar from "../../components/TopBar";
 
 const basketIcon = require("../cart/basket.png");
 const trashIcon = require("../cart/trash.png");
+const scanMe = require("../../assets/scan_border.png");
 
 export default class ScannerScreen extends React.Component {
     constructor(props) {
@@ -187,7 +188,7 @@ export default class ScannerScreen extends React.Component {
                 <View style={styles.statusBar}/>
                 <TopBar page={"Scan een product!"}/>
                 <View style={styles.screenEstate}>
-
+                    <Image source={scanMe} style={styles.scanMe}/>
 
 
                     {/*<View style={styles.goToCartIcon}>
@@ -429,5 +430,9 @@ const styles = StyleSheet.create({
     statusBar: {
         backgroundColor: '#fe0127',
         height: Constants.statusBarHeight
+    },
+    scanMe: {
+        width: Dimensions.get('window').width * 0.75,
+        height: Dimensions.get('window').width * 0.75,
     },
 })
