@@ -15,6 +15,7 @@ import ajaxFetch from "./fetchProduct";
 import ajaxDelete from "../cart/deleteItem";
 import cart from "./addToCart";
 import Constants from "expo-constants";
+import TopBar from "../../components/TopBar";
 
 const basketIcon = require("../cart/basket.png");
 const trashIcon = require("../cart/trash.png");
@@ -133,83 +134,103 @@ export default class ScannerScreen extends React.Component {
 
     render() {
         if (this.state.hasCameraPermission === null) {
-            return <Text style={styles.error}> Requesting for camera permission</Text>;
+            return (
+                <View style={{flex: 1}}>
+                    <View style={styles.statusBar}/>
+                    <TopBar page={"Oh nee!"}></TopBar>
+                    <View style={styles.screenEstate}>
+                        <Text style={styles.error}> Vraag toestemming voor camera!</Text>
+                    </View>
+                </View>
+            );
         }
         if (this.state.hasCameraPermission === false) {
-            return <Text style={styles.error}> No access to camera </Text>;
+            return (
+                <View style={{flex: 1}}>
+                    <View style={styles.statusBar}/>
+                    <TopBar page={"Oh nee!"}></TopBar>
+                    <View style={styles.screenEstate}>
+                        <Text style={styles.error}> Geen toegang to camera! </Text>
+                    </View>
+                </View>
+            );
         }
         return (
             <View style={{flex: 1}}>
-
                 <BarCodeScanner
                     onBarCodeScanned={this.state.scanned ? undefined : this.handleBarCodeScanned}
                     style={StyleSheet.absoluteFillObject}
                 />
+                <View style={styles.statusBar}/>
+                <TopBar page={"Scan een product!"}></TopBar>
+                <View style={styles.screenEstate}>
 
 
-                <View style={styles.goToCartIcon}>
-                    <View style={styles.goToCartBackground}>
-                        <Pressable onPress={() => this.props.navigation.navigate('Cart')}>
-                            <View style={styles.cartContainer}>
-                                <Image source={basketIcon} style={styles.cartIcon}/>
+
+                    {/*<View style={styles.goToCartIcon}>
+                        <View style={styles.goToCartBackground}>
+                            <Pressable onPress={() => this.props.navigation.navigate('Cart')}>
+                                <View style={styles.cartContainer}>
+                                    <Image source={basketIcon} style={styles.cartIcon}/>
+                                </View>
+                            </Pressable>
+                            <Text style={styles.cartText}>Ga naar Winkelwagen</Text>
+                        </View>
+                    </View>*/}
+
+
+                    <Modal
+                        style={styles.modal}
+                        isVisible={this.state.visible}
+                        shouldCloseOnOverlayClick={false}
+                    >
+                        <View style={styles.row}>
+                            <View style={styles.iconContainer}>
+                                <Image source={basketIcon} style={styles.icon}/>
                             </View>
-                        </Pressable>
-                        <Text style={styles.cartText}>Ga naar Winkelwagen</Text>
-                    </View>
+                            <View style={styles.info}>
+                                <Text style={styles.items}>{this.state.productDescription}</Text>
+                                {this.state.productQuatity !== 1 && (
+                                    <Text style={styles.unitprice}>{this.state.productQuatity} stuks</Text>
+                                )}
+                                {this.state.productQuatity === 1 && (
+                                    <Text style={styles.unitprice}>{this.state.productQuatity} stuk</Text>
+                                )}
+                            </View>
+                            <View style={styles.total}>
+                                <Text style={styles.unitprice}>{this.state.unitPrice}</Text>
+                                <Text style={styles.price}>€{this.state.totalPrice}</Text>
+                            </View>
+                        </View>
+                        <View style={styles.modalFooter}>
+                            <View style={styles.divider}></View>
+                            <View style={styles.buttonsModal}>
+                                <TouchableOpacity style={{...styles.actions, backgroundColor: "#db2828"}}
+                                                  onPress={() => this.deleteOne()}>
+                                    <Text style={styles.actionText}>-</Text>
+                                </TouchableOpacity>
+
+                                {this.state.productQuatity > 0 && (
+                                    <TouchableOpacity style={{...styles.submitButton, backgroundColor: "#0a42ee"}}
+                                                      onPress={() => this.addToCart()}>
+                                        <Image source={basketIcon} style={styles.icon}/>
+                                    </TouchableOpacity>
+                                )}
+                                {this.state.productQuatity < 1 && (
+                                    <TouchableOpacity style={{...styles.submitButton, backgroundColor: "#050505"}}
+                                                      onPress={() => this.deleteFromCart()}>
+                                        <Image source={trashIcon} style={styles.icon}/>
+                                    </TouchableOpacity>
+                                )}
+
+                                <TouchableOpacity style={{...styles.actions, backgroundColor: "#21ba45"}}
+                                                  onPress={() => this.addOne()}>
+                                    <Text style={styles.actionText}>+</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
-
-
-                <Modal
-                    style={styles.modal}
-                    isVisible={this.state.visible}
-                    shouldCloseOnOverlayClick={false}
-                >
-                    <View style={styles.row}>
-                        <View style={styles.iconContainer}>
-                            <Image source={basketIcon} style={styles.icon}/>
-                        </View>
-                        <View style={styles.info}>
-                            <Text style={styles.items}>{this.state.productDescription}</Text>
-                            {this.state.productQuatity !== 1 && (
-                                <Text style={styles.unitprice}>{this.state.productQuatity} stuks</Text>
-                            )}
-                            {this.state.productQuatity === 1 && (
-                                <Text style={styles.unitprice}>{this.state.productQuatity} stuk</Text>
-                            )}
-                        </View>
-                        <View style={styles.total}>
-                            <Text style={styles.unitprice}>{this.state.unitPrice}</Text>
-                            <Text style={styles.price}>€{this.state.totalPrice}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.modalFooter}>
-                        <View style={styles.divider}></View>
-                        <View style={styles.buttonsModal}>
-                            <TouchableOpacity style={{...styles.actions, backgroundColor: "#db2828"}}
-                                              onPress={() => this.deleteOne()}>
-                                <Text style={styles.actionText}>-</Text>
-                            </TouchableOpacity>
-
-                            {this.state.productQuatity > 0 && (
-                                <TouchableOpacity style={{...styles.submitButton, backgroundColor: "#0a42ee"}}
-                                                  onPress={() => this.addToCart()}>
-                                    <Image source={basketIcon} style={styles.icon}/>
-                                </TouchableOpacity>
-                            )}
-                            {this.state.productQuatity < 1 && (
-                                <TouchableOpacity style={{...styles.submitButton, backgroundColor: "#050505"}}
-                                                  onPress={() => this.deleteFromCart()}>
-                                    <Image source={trashIcon} style={styles.icon}/>
-                                </TouchableOpacity>
-                            )}
-
-                            <TouchableOpacity style={{...styles.actions, backgroundColor: "#21ba45"}}
-                                              onPress={() => this.addOne()}>
-                                <Text style={styles.actionText}>+</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </Modal>
             </View>
         )
     }
@@ -375,5 +396,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    }
+    },
+    screenEstate: {
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    statusBar: {
+        backgroundColor: '#fe0127',
+        height: Constants.statusBarHeight
+    },
 })
