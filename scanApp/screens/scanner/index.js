@@ -8,6 +8,7 @@ import {
     Alert,
     Pressable,
 } from 'react-native'
+
 import Modal from 'react-native-modal';
 import {Dimensions} from 'react-native';
 import {BarCodeScanner} from 'expo-barcode-scanner';
@@ -33,14 +34,32 @@ export default class ScannerScreen extends React.Component {
             totalPrice: null,
             productQuatity: 1,
             scanned: false,
-            hasCameraPermission: false
+            hasCameraPermission: false,
+            pageActive: false
         }
     }
 
     componentDidMount() {
         this.requestCameraPermission().catch(e => {
             console.log(e)
-        })
+        });
+
+        this.props.navigation.addListener('focus', () => {
+            this.setState({
+                pageActive: true,
+            });
+        });
+        this.props.navigation.addListener('blur', () => {
+            this.setState({
+                pageActive: false,
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        this.setState({
+            pageActive: false,
+        });
     }
 
     requestCameraPermission = async () => {
@@ -137,7 +156,7 @@ export default class ScannerScreen extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <View style={styles.statusBar}/>
-                    <TopBar page={"Oh nee!"}></TopBar>
+                    <TopBar page={"Oh nee!"}/>
                     <View style={styles.screenEstate}>
                         <Text style={styles.error}> Vraag toestemming voor camera!</Text>
                     </View>
@@ -148,7 +167,7 @@ export default class ScannerScreen extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <View style={styles.statusBar}/>
-                    <TopBar page={"Oh nee!"}></TopBar>
+                    <TopBar page={"Oh nee!"}/>
                     <View style={styles.screenEstate}>
                         <Text style={styles.error}> Geen toegang to camera! </Text>
                     </View>
@@ -157,12 +176,16 @@ export default class ScannerScreen extends React.Component {
         }
         return (
             <View style={{flex: 1}}>
-                <BarCodeScanner
-                    onBarCodeScanned={this.state.scanned ? undefined : this.handleBarCodeScanned}
-                    style={StyleSheet.absoluteFillObject}
-                />
+
+                {this.state.pageActive && (
+                    <BarCodeScanner
+                        onBarCodeScanned={this.state.scanned ? undefined : this.handleBarCodeScanned}
+                        style={StyleSheet.absoluteFillObject}
+                    />
+                )}
+
                 <View style={styles.statusBar}/>
-                <TopBar page={"Scan een product!"}></TopBar>
+                <TopBar page={"Scan een product!"}/>
                 <View style={styles.screenEstate}>
 
 

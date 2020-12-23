@@ -28,6 +28,14 @@ export default class CartScreen extends React.Component {
     async componentDidMount() {
         const cart = await ajax.fetchCart(Constants.installationId);
         this.setState({cart});
+        this.props.navigation.addListener('focus', () => {
+            this.updateCart();
+        });
+    }
+
+    async updateCart() {
+        const cart = await ajax.fetchCart(Constants.installationId);
+        this.setState({cart});
     }
 
     async deleteFromCart(barcode) {
@@ -65,7 +73,7 @@ export default class CartScreen extends React.Component {
         return (
             <View style={styles.mainContainer}>
                 <View style={styles.statusBar} />
-                <TopBar page={"Winkelwagen"}></TopBar>
+                <TopBar page={"Winkelwagen"}/>
                 <View style={styles.screenEstate}>
                 <FlatList
                     data={this.state.cart}
@@ -77,7 +85,7 @@ export default class CartScreen extends React.Component {
                                         <TouchableOpacity onPress={() => {
                                             this.deleteFromCart(item.barcode)
                                         }} style={styles.swipeDelete}>
-                                            <Image source={trashIcon} style={styles.trashIcon}></Image>
+                                            <Image source={trashIcon} style={styles.trashIcon}/>
                                         </TouchableOpacity>
                                     )
                                 }}
@@ -99,12 +107,12 @@ export default class CartScreen extends React.Component {
                                     <TouchableOpacity onPress={() => {
                                         this.addOneItem(item.id, item.items)
                                     }} style={styles.addOneTouchable}>
-                                        <Image source={plusIcon} style={styles.plusIcon}></Image>
+                                        <Image source={plusIcon} style={styles.plusIcon}/>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => {
                                         this.deleteOneFromCart(item.barcode, item.id, item.items)
                                     }} style={styles.deleteOneTouchable}>
-                                        <Image source={minusIcon} style={styles.minusIcon}></Image>
+                                        <Image source={minusIcon} style={styles.minusIcon}/>
                                     </TouchableOpacity>
                                     <View style={styles.total}>
                                         <Text style={styles.unitprice}>{item.unitprice}</Text>

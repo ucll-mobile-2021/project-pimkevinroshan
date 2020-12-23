@@ -22,7 +22,7 @@ const LandingScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.statusBar} />
-            <TopBar page={"Welkom"}></TopBar>
+            <TopBar page={"Welkom"}/>
             <View style={styles.screenEstate}>
                 <Text>Landing Screen</Text>
             </View>

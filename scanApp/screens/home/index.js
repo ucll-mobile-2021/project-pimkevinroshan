@@ -25,7 +25,7 @@ const HomeScreen = ({}) => {
     return (
         <View style={styles.container}>
             <View style={styles.statusBar}/>
-            <TopBar page={"Scan code aan kassa"}></TopBar>
+            <TopBar page={"Scan code aan kassa"}/>
             <View style={styles.screenEstate}>
                 <QRCode
                     logo={logoFromFile}
