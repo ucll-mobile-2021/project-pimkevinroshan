@@ -9,6 +9,7 @@ import updateOneQuantityAjax from "./updateQuantityByOne";
 //import SwipeItem from "./swipeable";
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import TopBar from "../../components/TopBar";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const basketIcon = require("./basket.png");
 const plusIcon = require("./plus.png");
@@ -26,8 +27,7 @@ export default class CartScreen extends React.Component {
     }
 
     async componentDidMount() {
-        const cart = await ajax.fetchCart(Constants.installationId);
-        this.setState({cart});
+        await this.updateCart();
         this.props.navigation.addListener('focus', () => {
             this.updateCart();
         });
@@ -40,8 +40,7 @@ export default class CartScreen extends React.Component {
 
     async deleteFromCart(barcode) {
         const temp = await delAjax.deleteItem(Constants.installationId, barcode);
-        const cart = await ajax.fetchCart(Constants.installationId);
-        this.setState({cart});
+        await this.updateCart();
     }
 
     async deleteOneFromCart(barcode, productID, quantity) {
@@ -58,15 +57,13 @@ export default class CartScreen extends React.Component {
             ], {cancelable: false});
         } else {
             const temp = await updateOneQuantityAjax.updateOneQuantityItem(Constants.installationId, productID, quantity - 1);
-            const cart = await ajax.fetchCart(Constants.installationId);
-            this.setState({cart});
+            await this.updateCart();
         }
     }
 
     async addOneItem(productID, quantity) {
         const temp = await updateOneQuantityAjax.updateOneQuantityItem(Constants.installationId, productID, quantity + 1);
-        const cart = await ajax.fetchCart(Constants.installationId);
-        this.setState({cart});
+        await this.updateCart();
     }
 
     render() {
@@ -76,7 +73,7 @@ export default class CartScreen extends React.Component {
                 <TopBar page={"Winkelwagen"}/>
                 <View style={styles.screenEstate}>
                 <FlatList
-                    data={this.state.cart}
+                    data={this.state.cart.products}
                     renderItem={({item}) => (
                         <View>
                             <Swipeable
@@ -124,6 +121,21 @@ export default class CartScreen extends React.Component {
                     )}
                     keyExtractor={(item) => item.barcode}
                 />
+                    <View style={styles.totalCartRow}>
+                        <Ionicons name="cart-outline" size='40' color="red" />
+                        <View style={styles.info}>
+                            <Text style={styles.items}>TOTAAL</Text>
+                            {this.state.cart.items === 1 && (
+                                <Text style={styles.unitprice}>{this.state.cart.items} product</Text>
+                            )}
+                            {this.state.cart.items !== 1 && (
+                                <Text style={styles.unitprice}>{this.state.cart.items} producten</Text>
+                            )}
+                        </View>
+                        <View style={styles.cartTotal}>
+                            <Text style={styles.price}>€{this.state.cart.totalPrice}</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
         );
@@ -171,6 +183,19 @@ const styles = StyleSheet.create({
         marginRight: 10,
         paddingTop: 20,
         paddingBottom: 20,
+    },
+    totalCartRow: {
+        borderColor: "#f1f1f1",
+        backgroundColor: '#f1f1f1',
+        borderTopWidth: 5,
+        borderTopColor: 'green',
+        flexDirection: "row",
+        paddingTop: 20,
+        paddingBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     iconContainer: {
         alignItems: "center",
@@ -226,6 +251,12 @@ const styles = StyleSheet.create({
         width: 110,
         paddingRight: 5,
         alignItems: 'flex-end'
+    },
+    cartTotal: {
+        width: 130,
+        paddingRight: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     unitprice: {
         fontSize: 12,
