@@ -8,6 +8,7 @@ import LandingScreen from './screens/landing';
 import CartScreen from './screens/cart';
 import HomeScreen from './screens/home';
 import ScannerScreen from './screens/scanner';
+import ShoppingListScreen from './screens/list';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +27,9 @@ function MyTabs() {
                         iconName = focused ? 'barcode' : 'barcode-outline';
                     } else if (route.name === 'Payment') {
                         iconName = focused ? 'card' : 'card-outline';
-                    }
+                    } else if (route.name === 'Shopping List') {
+                        iconName = focused ? 'list' : 'list-ol';
+                    }   
 
                     // You can return any component that you like here!
                     return <Ionicons name={iconName} size={size} color={color} />;
@@ -41,6 +44,7 @@ function MyTabs() {
             <Tab.Screen name="Cart" component={CartScreen} />
             <Tab.Screen name="Scanner" component={ScannerScreen} />
             <Tab.Screen name="Payment" component={HomeScreen} />
+            <Tab.Screen name="Shopping List" component={ShoppingListScreen} />
         </Tab.Navigator>
     );
 }
