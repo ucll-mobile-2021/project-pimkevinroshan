@@ -122,7 +122,7 @@ export default class CartScreen extends React.Component {
                     keyExtractor={(item) => item.barcode}
                 />
                     <View style={styles.totalCartRow}>
-                        <Ionicons name="cart-outline" size='40' color="red" />
+                        <Ionicons name="cart-outline" size={40} color="red" />
                         <View style={styles.info}>
                             <Text style={styles.items}>TOTAAL</Text>
                             {this.state.cart.items === 1 && (

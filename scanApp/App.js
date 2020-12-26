@@ -21,15 +21,15 @@ function MyTabs() {
 
                     if (route.name === 'Home') {
                         iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Cart') {
-                        iconName = focused ? 'cart' : 'cart-outline';
+                    } else if (route.name === 'Shopping List') {
+                        iconName = focused ? 'list' : 'list-outline';
                     } else if (route.name === 'Scanner') {
                         iconName = focused ? 'barcode' : 'barcode-outline';
+                    } else if (route.name === 'Cart') {
+                        iconName = focused ? 'cart' : 'cart-outline';
                     } else if (route.name === 'Payment') {
                         iconName = focused ? 'card' : 'card-outline';
-                    } else if (route.name === 'Shopping List') {
-                        iconName = focused ? 'list' : 'list-ol';
-                    }   
+                    }
 
                     // You can return any component that you like here!
                     return <Ionicons name={iconName} size={size} color={color} />;
@@ -41,10 +41,10 @@ function MyTabs() {
             }}
         >
             <Tab.Screen name="Home" component={LandingScreen} />
-            <Tab.Screen name="Cart" component={CartScreen} />
-            <Tab.Screen name="Scanner" component={ScannerScreen} />
-            <Tab.Screen name="Payment" component={HomeScreen} />
             <Tab.Screen name="Shopping List" component={ShoppingListScreen} />
+            <Tab.Screen name="Scanner" component={ScannerScreen} />
+            <Tab.Screen name="Cart" component={CartScreen} />
+            <Tab.Screen name="Payment" component={HomeScreen} />
         </Tab.Navigator>
     );
 }
