@@ -1,5 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {View, Text, Button, StyleSheet, TouchableOpacity} from 'react-native';
+import {CheckBox} from "native-base";
 import Constants from 'expo-constants';
 import TopBar from '../../components/TopBar';
 import {TextInput} from 'react-native-paper';
@@ -38,6 +39,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#fe0127',
         height: Constants.statusBarHeight
     },
+    item:{
+        width:"100%",
+        backgroundColor:"#fff",
+        borderRadius:20,
+        padding:10,
+        marginBottom:10,
+        flexDirection:"row",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    checkBoxTxt:{
+        marginLeft:20
+    },
 });
 
 export default class LandingScreen extends React.Component {
@@ -48,6 +62,7 @@ export default class LandingScreen extends React.Component {
             firstName: '',
             email: '',
             knownUser: 'false',
+            selectedBox: 'false'
         }
     }
 
@@ -80,7 +95,7 @@ export default class LandingScreen extends React.Component {
     }
 
     async uploadCredentials() {
-        if (this.state.name !== '' && this.state.firstName !== '' && this.validateEmail(this.state.email)) {
+        if (this.state.name !== '' && this.state.firstName !== '' && this.validateEmail(this.state.email) && this.state.selectedBox === 'true') {
             let response = await upload.uploadUser(Constants.installationId, this.state.name, this.state.firstName, this.state.email);
             this.setState({
                 knownUser: 'true'
@@ -91,6 +106,19 @@ export default class LandingScreen extends React.Component {
     validateEmail(email) {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
+    }
+
+    flipCheckBox() {
+        let old = this.state.selectedBox;
+        if(old==='false'){
+            this.setState({
+                selectedBox: 'true'
+            });
+        } else {
+            this.setState({
+                selectedBox: 'false'
+            });
+        }
     }
 
     render(){
@@ -142,6 +170,13 @@ export default class LandingScreen extends React.Component {
                                 }
                             }}
                         />
+
+                        <View style={styles.item} >
+                            <CheckBox checked={this.state.selectedBox==='true'} color="#fe0127" onPress={()=>this.flipCheckBox()}/>
+                            <Text style={styles.checkBoxTxt}
+                            >Ik begrijp dat mijn gegevens opgeslagen, en enkel gebruikt zullen worden voor de correcte werking van deze app.</Text>
+                        </View>
+
                         <View style={styles.centerBox}>
                             <TouchableOpacity
                                 onPress={() => this.uploadCredentials()}
