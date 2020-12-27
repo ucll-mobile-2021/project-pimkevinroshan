@@ -1,15 +1,22 @@
 import React from 'react';
-import {View, Text, Button, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Button, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {CheckBox} from "native-base";
 import Constants from 'expo-constants';
 import TopBar from '../../components/TopBar';
 import {TextInput} from 'react-native-paper';
 import ajax from "./getCredentials";
 import upload from "./uploadUser";
+import connected from "../checkConnectivity";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    error: {
+        color: "#ff0025",
+        fontSize: 25,
+        fontWeight: "bold",
+        textAlign: 'center',
     },
     screenEstate: {
         flex: 1,
@@ -78,8 +85,25 @@ export default class LandingScreen extends React.Component {
         this.setState({email: text});
     }
 
-    componentDidMount() {
-        this.getCredentialsUser();
+    async componentDidMount() {
+        await this.updatePage();
+        const response = this.getCredentialsUser();
+        this.props.navigation.addListener('focus', () => {
+            this.updatePage();
+        });
+    }
+
+    async updatePage() {
+        const isConnected = await connected.CheckConnectivity();
+        if (!isConnected) {
+            this.setState({
+                connected: 'false',
+            });
+        } else {
+            this.setState({
+                connected: 'true',
+            });
+        }
     }
 
     async getCredentialsUser() {
@@ -100,6 +124,8 @@ export default class LandingScreen extends React.Component {
             this.setState({
                 knownUser: 'true'
             });
+        } else {
+            alert("Gelieve alle velden correct in te vullen en akkoord te gaan met de voorwaarden.");
         }
     }
 
@@ -121,8 +147,22 @@ export default class LandingScreen extends React.Component {
         }
     }
 
-    render(){
-        if (this.state.knownUser === 'false') {
+    async isConnected() {
+        return await connected.CheckConnectivity();
+    }
+
+    render() {
+        if (this.state.connected === 'false') {
+            return (
+                <View style={{flex: 1}}>
+                    <View style={styles.statusBar}/>
+                    <TopBar page={"Oh nee!"}/>
+                    <View style={styles.screenEstate}>
+                        <Text style={styles.error}> Geen toegang tot het internet! Gelieve de app te herstarten nadat U uw verbinding hersteld heeft.</Text>
+                    </View>
+                </View>
+            );
+        } else if (this.state.knownUser === 'false') {
             return (
                 <View style={styles.container}>
                     <View style={styles.statusBar}/>
@@ -171,10 +211,12 @@ export default class LandingScreen extends React.Component {
                             }}
                         />
 
-                        <View style={styles.item} >
-                            <CheckBox checked={this.state.selectedBox==='true'} color="#fe0127" onPress={()=>this.flipCheckBox()}/>
+                        <View style={styles.item}>
+                            <CheckBox checked={this.state.selectedBox === 'true'} color="#fe0127"
+                                      onPress={() => this.flipCheckBox()}/>
                             <Text style={styles.checkBoxTxt}
-                            >Ik begrijp dat mijn gegevens opgeslagen, en enkel gebruikt zullen worden voor de correcte werking van deze app.</Text>
+                            >Ik begrijp dat mijn gegevens opgeslagen, en enkel gebruikt zullen worden voor de correcte
+                                werking van deze app.</Text>
                         </View>
 
                         <View style={styles.centerBox}>
@@ -201,6 +243,20 @@ export default class LandingScreen extends React.Component {
                     <TopBar page={"Welkom"}/>
                     <View style={styles.screenEstate}>
                         <Text>Landing Screen {this.state.email}</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                const response = connected.CheckConnectivity();
+                            }}
+                            style={{
+                                backgroundColor: 'red',
+                                borderRadius: 5,
+                                width: 200,
+                                flex: 0,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                            <Text style={{fontSize: 20, color: '#fff', margin: 15}}>Ga verder</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             );

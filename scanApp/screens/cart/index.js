@@ -10,6 +10,7 @@ import updateOneQuantityAjax from "./updateQuantityByOne";
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import TopBar from "../../components/TopBar";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import connected from "../checkConnectivity";
 
 const basketIcon = require("./basket.png");
 const plusIcon = require("./plus.png");
@@ -34,8 +35,13 @@ export default class CartScreen extends React.Component {
     }
 
     async updateCart() {
-        const cart = await ajax.fetchCart(Constants.installationId);
-        this.setState({cart});
+        const isConnected = await connected.CheckConnectivity();
+        if (isConnected) {
+            const cart = await ajax.fetchCart(Constants.installationId);
+            this.setState({cart});
+        } else {
+            connected.showError(this.props.navigation);
+        }
     }
 
     async deleteFromCart(barcode) {
@@ -52,7 +58,8 @@ export default class CartScreen extends React.Component {
                     }
                 },
                 {
-                    text: 'Nee', onPress: () => {}
+                    text: 'Nee', onPress: () => {
+                    }
                 }
             ], {cancelable: false});
         } else {
@@ -69,60 +76,60 @@ export default class CartScreen extends React.Component {
     render() {
         return (
             <View style={styles.mainContainer}>
-                <View style={styles.statusBar} />
+                <View style={styles.statusBar}/>
                 <TopBar page={"Winkelwagen"}/>
                 <View style={styles.screenEstate}>
-                <FlatList
-                    data={this.state.cart.products}
-                    renderItem={({item}) => (
-                        <View>
-                            <Swipeable
-                                renderRightActions={() => {
-                                    return (
-                                        <TouchableOpacity onPress={() => {
-                                            this.deleteFromCart(item.barcode)
-                                        }} style={styles.swipeDelete}>
-                                            <Image source={trashIcon} style={styles.trashIcon}/>
-                                        </TouchableOpacity>
-                                    )
-                                }}
-                            >
-                                <View style={styles.row}>
-                                    <View style={styles.iconContainer}>
-                                        <Image source={basketIcon} style={styles.icon}/>
-                                    </View>
+                    <FlatList
+                        data={this.state.cart.products}
+                        renderItem={({item}) => (
+                            <View>
+                                <Swipeable
+                                    renderRightActions={() => {
+                                        return (
+                                            <TouchableOpacity onPress={() => {
+                                                this.deleteFromCart(item.barcode)
+                                            }} style={styles.swipeDelete}>
+                                                <Image source={trashIcon} style={styles.trashIcon}/>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                    <View style={styles.row}>
+                                        <View style={styles.iconContainer}>
+                                            <Image source={basketIcon} style={styles.icon}/>
+                                        </View>
 
-                                    <View style={styles.info}>
-                                        {item.items > 1 && (
-                                            <Text style={styles.items}>{item.items} stuks</Text>
-                                        )}
-                                        {item.items < 2 && (
-                                            <Text style={styles.items}>{item.items} stuk</Text>
-                                        )}
-                                        <Text style={styles.description}>{item.description}</Text>
+                                        <View style={styles.info}>
+                                            {item.items > 1 && (
+                                                <Text style={styles.items}>{item.items} stuks</Text>
+                                            )}
+                                            {item.items < 2 && (
+                                                <Text style={styles.items}>{item.items} stuk</Text>
+                                            )}
+                                            <Text style={styles.description}>{item.description}</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => {
+                                            this.addOneItem(item.id, item.items)
+                                        }} style={styles.addOneTouchable}>
+                                            <Image source={plusIcon} style={styles.plusIcon}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => {
+                                            this.deleteOneFromCart(item.barcode, item.id, item.items)
+                                        }} style={styles.deleteOneTouchable}>
+                                            <Image source={minusIcon} style={styles.minusIcon}/>
+                                        </TouchableOpacity>
+                                        <View style={styles.total}>
+                                            <Text style={styles.unitprice}>{item.unitprice}</Text>
+                                            <Text style={styles.price}>€{item.total}</Text>
+                                        </View>
                                     </View>
-                                    <TouchableOpacity onPress={() => {
-                                        this.addOneItem(item.id, item.items)
-                                    }} style={styles.addOneTouchable}>
-                                        <Image source={plusIcon} style={styles.plusIcon}/>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => {
-                                        this.deleteOneFromCart(item.barcode, item.id, item.items)
-                                    }} style={styles.deleteOneTouchable}>
-                                        <Image source={minusIcon} style={styles.minusIcon}/>
-                                    </TouchableOpacity>
-                                    <View style={styles.total}>
-                                        <Text style={styles.unitprice}>{item.unitprice}</Text>
-                                        <Text style={styles.price}>€{item.total}</Text>
-                                    </View>
-                                </View>
-                            </Swipeable>
-                        </View>
-                    )}
-                    keyExtractor={(item) => item.barcode}
-                />
+                                </Swipeable>
+                            </View>
+                        )}
+                        keyExtractor={(item) => item.barcode}
+                    />
                     <View style={styles.totalCartRow}>
-                        <Ionicons name="cart-outline" size={40} color="red" />
+                        <Ionicons name="cart-outline" size={40} color="red"/>
                         <View style={styles.info}>
                             <Text style={styles.items}>TOTAAL</Text>
                             {this.state.cart.items === 1 && (

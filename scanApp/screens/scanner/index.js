@@ -17,6 +17,8 @@ import ajaxDelete from "../cart/deleteItem";
 import cart from "./addToCart";
 import Constants from "expo-constants";
 import TopBar from "../../components/TopBar";
+import connected from "../checkConnectivity";
+import ajax from "../cart/fetchCart";
 
 const basketIcon = require("../cart/basket.png");
 const trashIcon = require("../cart/trash.png");
@@ -40,12 +42,13 @@ export default class ScannerScreen extends React.Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.requestCameraPermission().catch(e => {
             console.log(e)
         });
 
         this.props.navigation.addListener('focus', () => {
+            this.updatePage();
             this.setState({
                 pageActive: true,
             });
@@ -55,6 +58,16 @@ export default class ScannerScreen extends React.Component {
                 pageActive: false,
             });
         });
+        await this.updatePage();
+    }
+
+    async updatePage() {
+        const isConnected = await connected.CheckConnectivity();
+        if (!isConnected) {
+            connected.showError(this.props.navigation);
+            return false;
+        }
+        return true;
     }
 
     componentWillUnmount() {
@@ -106,27 +119,29 @@ export default class ScannerScreen extends React.Component {
 
     handleBarCodeScanned = async ({type, data}) => {
         this.setState({scanned: true});
-        const product = await ajaxFetch.fetchProduct(Constants.installationId, data);
-        if (product.barcode != null) {
-            let quantity = product.quantity;
-            let price = product.price * quantity;
-            price = (Math.round(price * 100) / 100).toFixed(2);
-            this.setState({
-                productID: product.id,
-                barcode: product.barcode,
-                productQuatity: product.quantity,
-                productDescription: product.description,
-                unitPrice: product.unitprice,
-                productPrice: product.price,
-                totalPrice: price
-            });
-            this.showModal();
-        } else {
-            Alert.alert("", "Barcode onbekend in systeem!", [{
-                text: 'OK', onPress: () => {
-                    this.setState({scanned: false})
-                }
-            }], {cancelable: false});
+        if(await this.updatePage()){
+            const product = await ajaxFetch.fetchProduct(Constants.installationId, data);
+            if (product.barcode != null) {
+                let quantity = product.quantity;
+                let price = product.price * quantity;
+                price = (Math.round(price * 100) / 100).toFixed(2);
+                this.setState({
+                    productID: product.id,
+                    barcode: product.barcode,
+                    productQuatity: product.quantity,
+                    productDescription: product.description,
+                    unitPrice: product.unitprice,
+                    productPrice: product.price,
+                    totalPrice: price
+                });
+                this.showModal();
+            } else {
+                Alert.alert("", "Barcode onbekend in systeem!", [{
+                    text: 'OK', onPress: () => {
+                        this.setState({scanned: false})
+                    }
+                }], {cancelable: false});
+            }
         }
     };
 
@@ -170,7 +185,7 @@ export default class ScannerScreen extends React.Component {
                     <View style={styles.statusBar}/>
                     <TopBar page={"Oh nee!"}/>
                     <View style={styles.screenEstate}>
-                        <Text style={styles.error}> Geen toegang to camera! </Text>
+                        <Text style={styles.error}> Geen toegang tot camera! </Text>
                     </View>
                 </View>
             );
