@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Button, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
 import {CheckBox} from "native-base";
 import Constants from 'expo-constants';
 import TopBar from '../../components/TopBar';
@@ -7,6 +7,8 @@ import {TextInput} from 'react-native-paper';
 import ajax from "./getCredentials";
 import upload from "./uploadUser";
 import connected from "../checkConnectivity";
+import {Card} from 'react-native-elements';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const styles = StyleSheet.create({
     container: {
@@ -31,7 +33,16 @@ const styles = StyleSheet.create({
     },
     formText: {
         fontSize: 20,
+        marginBottom: 15,
         fontWeight: 'bold'
+    },
+    cardText: {
+        fontSize: 20,
+        marginBottom: 15,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingBottom: 25,
+        paddingTop: 25
     },
     centerBox: {
         flex: 0,
@@ -46,18 +57,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#fe0127',
         height: Constants.statusBarHeight
     },
-    item:{
-        width:"100%",
-        backgroundColor:"#fff",
-        borderRadius:20,
-        padding:10,
-        marginBottom:10,
-        flexDirection:"row",
+    item: {
+        width: "100%",
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        padding: 10,
+        marginBottom: 10,
+        flexDirection: "row",
         justifyContent: "center",
         alignItems: "center"
     },
-    checkBoxTxt:{
-        marginLeft:20
+    checkBoxTxt: {
+        marginLeft: 20
+    },
+    paragraph: {
+        margin: 24,
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#34495e',
     },
 });
 
@@ -68,6 +86,7 @@ export default class LandingScreen extends React.Component {
             name: '',
             firstName: '',
             email: '',
+            points: '0',
             knownUser: 'false',
             selectedBox: 'false'
         }
@@ -100,6 +119,7 @@ export default class LandingScreen extends React.Component {
                 connected: 'false',
             });
         } else {
+            await this.getCredentialsUser();
             this.setState({
                 connected: 'true',
             });
@@ -111,8 +131,9 @@ export default class LandingScreen extends React.Component {
         if (user.id != null) {
             this.setState({
                 email: user.email,
-                name: user.fName,
-                firstName: user.lName,
+                name: user.lName,
+                firstName: user.fName,
+                points: user.points,
                 knownUser: 'true'
             });
         }
@@ -125,7 +146,12 @@ export default class LandingScreen extends React.Component {
                 knownUser: 'true'
             });
         } else {
-            alert("Gelieve alle velden correct in te vullen en akkoord te gaan met de voorwaarden.");
+            Alert.alert("Oh Oh!", "Gelieve alle velden correct in te vullen en akkoord te gaan met de voorwaarden.", [
+                {
+                    text: 'Begrepen', onPress: () => {
+                    }
+                }
+            ], {cancelable: false});
         }
     }
 
@@ -136,7 +162,7 @@ export default class LandingScreen extends React.Component {
 
     flipCheckBox() {
         let old = this.state.selectedBox;
-        if(old==='false'){
+        if (old === 'false') {
             this.setState({
                 selectedBox: 'true'
             });
@@ -158,7 +184,8 @@ export default class LandingScreen extends React.Component {
                     <View style={styles.statusBar}/>
                     <TopBar page={"Oh nee!"}/>
                     <View style={styles.screenEstate}>
-                        <Text style={styles.error}> Geen toegang tot het internet! Gelieve uw verbinding met het internet te herstellen.</Text>
+                        <Text style={styles.error}> Geen toegang tot het internet! Gelieve uw verbinding met het
+                            internet te herstellen.</Text>
                     </View>
                 </View>
             );
@@ -170,6 +197,8 @@ export default class LandingScreen extends React.Component {
                     <View style={styles.form}>
                         <View style={styles.centerBox}>
                             <Text style={styles.formText}>Vertel ons wat meer over jezelf!</Text>
+                            <Text>Je gegevens zijn enkel nodig als je delhaize punten wenst te verzamelen! (1 punt per
+                                uitgegegeven euro) Bij 500 punten heb je recht op een waardebon van €5.</Text>
                         </View>
                         <TextInput
                             style={styles.inputBox}
@@ -242,21 +271,39 @@ export default class LandingScreen extends React.Component {
                     <View style={styles.statusBar}/>
                     <TopBar page={"Welkom"}/>
                     <View style={styles.screenEstate}>
-                        <Text>Landing Screen {this.state.email}</Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                const response = connected.CheckConnectivity();
-                            }}
-                            style={{
-                                backgroundColor: 'red',
-                                borderRadius: 5,
-                                width: 200,
-                                flex: 0,
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                            <Text style={{fontSize: 20, color: '#fff', margin: 15}}>Ga verder</Text>
-                        </TouchableOpacity>
+                        <Card>
+                            <Text style={styles.cardText}>Welkom terug {this.state.firstName}!</Text>
+                            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                                <Ionicons name='gift-outline' size={40} color='red'/>
+                            </View>
+                            {this.state.points === 0 && (
+                                <Text style={styles.paragraph}>
+                                    Je hebt nog geen punten verzameld. Voltooi je eerste aankoop om punten te verzamelen.
+                                </Text>
+                            )}
+                            {this.state.points === 1 && (
+                                <Text style={styles.paragraph}>
+                                    Je hebt al {this.state.points} punt verzameld.
+                                </Text>
+                            )}
+                            {this.state.points > 1 && (
+                                <Text style={styles.paragraph}>
+                                    Je hebt al {this.state.points} punten verzameld.
+                                </Text>
+                            )}
+
+                            {this.state.points < 500 && (
+                                <Text style={styles.paragraph}>
+                                    Verzamel nog {500 - this.state.points} punten om een waardebon van €5 te verzilveren!
+                                </Text>
+                            )}
+                            {this.state.points >= 500 && (
+                                <Text style={styles.paragraph}>
+                                    Proficiat, je hebt recht op een waardebon. Ga naar het onthaal om jouw waardebon van €5 te verzilveren!
+                                </Text>
+                            )}
+
+                        </Card>
                     </View>
                 </View>
             );
