@@ -51,6 +51,7 @@ export default class ScannerScreen extends React.Component {
             this.updatePage();
             this.setState({
                 pageActive: true,
+                scanned: false
             });
         });
         this.props.navigation.addListener('blur', () => {

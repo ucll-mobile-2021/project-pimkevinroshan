@@ -158,7 +158,7 @@ export default class LandingScreen extends React.Component {
                     <View style={styles.statusBar}/>
                     <TopBar page={"Oh nee!"}/>
                     <View style={styles.screenEstate}>
-                        <Text style={styles.error}> Geen toegang tot het internet! Gelieve de app te herstarten nadat U uw verbinding hersteld heeft.</Text>
+                        <Text style={styles.error}> Geen toegang tot het internet! Gelieve uw verbinding met het internet te herstellen.</Text>
                     </View>
                 </View>
             );
