@@ -8,7 +8,7 @@ import LandingScreen from './screens/landing';
 import CartScreen from './screens/cart';
 import HomeScreen from './screens/home';
 import ScannerScreen from './screens/scanner';
-import ShoppingListScreen from './screens/list';
+//import ShoppingListScreen from './screens/list';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,8 +21,8 @@ function MyTabs() {
 
                     if (route.name === 'Home') {
                         iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Shopping List') {
-                        iconName = focused ? 'list' : 'list-outline';
+                    /* } else if (route.name === 'Shopping List') {
+                        iconName = focused ? 'list' : 'list-outline'; */
                     } else if (route.name === 'Scanner') {
                         iconName = focused ? 'barcode' : 'barcode-outline';
                     } else if (route.name === 'Cart') {
@@ -41,7 +41,7 @@ function MyTabs() {
             }}
         >
             <Tab.Screen name="Home" component={LandingScreen} />
-            <Tab.Screen name="Shopping List" component={ShoppingListScreen} />
+            {/* <Tab.Screen name="Shopping List" component={ShoppingListScreen} /> */}
             <Tab.Screen name="Scanner" component={ScannerScreen} />
             <Tab.Screen name="Cart" component={CartScreen} />
             <Tab.Screen name="Payment" component={HomeScreen} />

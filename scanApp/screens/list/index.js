@@ -1,139 +1,154 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, Image, Modal} from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
-import TopBar from '../../components/TopBar';
+import Autocomplete from 'react-native-autocomplete-input';
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList
+} from 'react-native';
 import Constants from 'expo-constants';
-import CheckBox from '@react-native-community/checkbox';
+import ajax from './fetchAllProducts';
+import list from './addToList';
 
+//const URI = `http://mobiele.kc-productions.org/getAllProducts.php?`;
 
-const ShoppingListScreen = ({}) => {
-    const [data, setData] = useState([{id: 1, title: 'Kaas en Salami', active: false}]);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [itemName, setItem] = useState('');
-    const renderItem=({item, index})=>{
-        return (
-            <View style={styles.groceryItem}>
-                <CheckBox
-    disabled={false}
-    value={item.active}
-    onValueChange={(newValue) => setToggleCheckBox(newValue, index)}
-  />
-                <Text style={styles.subtitle}>{item.title}</Text>
-            </View>
-        );
-    };
-
-    const openModal=()=>{
-        setIsModalVisible(true);
-    };
-    const closeModal=()=>{
-        setIsModalVisible(false);
-    };
-    const addItem=()=>{
-        let shoppingList = [...data];
-        shoppingList.push({id:shoppingList.length + 1, title: itemName, active: false});
-        setData(shoppingList)
-    };
-    const setToggleCheckBox = (value, index) => {
-        let newArr=[...data];
-        newArr[index].active=!newArr[index].active;
-        setData(newArr);
-
-    }
+class ShoppingListScreen extends Component {
+  static renderProduct(product) {
+    const { description} = product;
     return (
-        <View style={styles.container}>
-            <View style={styles.statusBar}/>
-            <TopBar page={"Scan code aan kassa"}/>
-            <SafeAreaView styles ={styles.contentContainer}>
-                <FlatList data={data} renderItem={renderItem} />
-                <TouchableOpacity style={styles.addBtnWrapper} onPress={openModal}>
-                <Image 
-                    style={styles.addIcon} 
-                    source={require('../cart/plus.png')} 
-                />
-            </TouchableOpacity>
-            </SafeAreaView>
-            <Modal transparent={true} visible={isModalVisible}>
-                <View style={styles.modalContentWrapper}>
-                    <TouchableOpacity style={styles.closeBtnWrapper} onPress={closeModal}>
-                        <Image style={styles.closeIcon} source={require('../../assets/close.png')}/>
-                    </TouchableOpacity>
-
-                    <View style={styles.inputWrapper}>
-                        <TextInput style={styles.textInput} placeholder={'What you want to buy?'} onChangeText= {(text)=>setItem(text)} />
-                        <TouchableOpacity style={styles.btnWrapper} onPress={addItem}>
-                            <Text style={{textAlign: 'center'}}>ADD</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-            
-        </View>
+      <View>
+        <Text style={styles.titleText}>{description}</Text>
+        {/* <FlatList
+                    data={this.state.items}
+        /> */}
+      </View>
     );
-};
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      products: [],
+      query: '',
+      isLoading: false,
+      //items: ["boter", "steak"],
+    };
+  }
+
+  async componentDidMount() {
+    const pro = await ajax.fetchAllProducts();
+    let products = Object.values(pro)[0];
+    this.setState({ products });
+
+  }
+
+  findProducts(query) {
+    if (query === '') {
+      return [];
+    }
+    const { products } = this.state;
+
+    const regex = new RegExp(`${query.trim()}`, 'i');
+    return products.filter(product => product.description.search(regex) >= 0);
+  }
+
+  async addToList() {
+    const response = await list.addToList(Constants.installationId, this.state.productID, this.state.productQuatity);
+    this.setState({
+        productID: null,
+        barcode: null,
+        productDescription: null,
+        unitPrice: null,
+        productPrice: null,
+        totalPrice: null,
+        productQuatity: 1,
+        scanned: false
+    });
+}
+
+  render() {
+    const { query } = this.state;
+    const products = this.findProducts(query);
+    console.log(products);
+    const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
+
+    return ( 
+      <View style={styles.container}>
+        <Autocomplete
+          autoCapitalize="none"
+          autoCorrect={false}
+          containerStyle={styles.autocompleteContainer}
+          data={products.length === 1 && comp(query, products[0].description) ? [] : products}
+          defaultValue={query}
+          onChangeText={text => this.setState({ query: text })}
+          placeholder="What do you want to buy?"
+          renderItem={({ item, i }) => (
+            /*<TouchableOpacity onPress={() => this.setState({ query: item.description })}>
+              <Text style={styles.itemText}>
+                {item.description}
+              </Text>
+            </TouchableOpacity>*/
+            <TouchableOpacity onPress={() => this.addToList()}>
+                <Text style={styles.itemText}>
+                    {item.description}
+                </Text>
+            </TouchableOpacity>
+          )}
+        />
+        <View style={styles.descriptionContainer}>
+          {products.length > 0 ? (
+            ShoppingListScreen.renderProduct(products[0])
+          ) : (
+            <Text style={styles.infoText}>
+                Your shopping list is empty.
+            </Text>
+          )}
+        </View>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    screenEstate: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    statusBar: {
-        backgroundColor: '#fe0127',
-        height: Constants.statusBarHeight
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    contentContainer: {
-        display: 'flex',
-        flex: 1,
-    },
-    addIcon:{
-        width: 50,
-        height: 50,
-    },
-    addBtnWrapper:{
-        alignItems: 'center',
-    },
-    modalContentWrapper: {
-        height: '50%',
-        marginTop: 'auto',
-        backgroundColor: '#fe0127',
-    },
-    closeIcon: {
-        width: 50,
-        height: 50,
-    },
-    closeBtnWrapper:{
-        alignItems: 'flex-end',
-    },
-    inputWrapper: {
-        marginTop: 60,
-    },
-    textInput: {
-        padding: 15,
-        backgroundColor: 'white',
-        fontSize: 20,
-    },
-    btnWrapper: {
-        backgroundColor: 'white',
-        marginTop: 30,
-        padding: 15,
-    },
-    groceryItem:{
-        flexDirection:'row',
-        alignItems: 'center',
-    },
-    subtitle:{
-        fontSize: 20,
-        marginLeft: 15,
-    }
+  container: {
+    backgroundColor: '#F5FCFF',
+    flex: 1,
+    paddingTop: 25
+  },
+  autocompleteContainer: {
+    marginLeft: 10,
+    marginRight: 10
+  },
+  itemText: {
+    fontSize: 15,
+    margin: 2
+  },
+  descriptionContainer: {
+    // `backgroundColor` needs to be set otherwise the
+    // autocomplete input will disappear on text input.
+    backgroundColor: '#F5FCFF',
+    marginTop: 8
+  },
+  infoText: {
+    textAlign: 'center'
+  },
+  titleText: {
+    fontSize: 18,
+    fontWeight: '500',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'center'
+  },
+  directorText: {
+    color: 'grey',
+    fontSize: 12,
+    marginBottom: 10,
+    textAlign: 'center'
+  },
+  openingText: {
+    textAlign: 'center'
+  }
 });
 
 export default ShoppingListScreen;
