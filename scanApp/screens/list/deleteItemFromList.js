@@ -1,4 +1,4 @@
-const URI = 'http://mobiele.kc-productions.org/deleteItemFromList.php?itemID=';
+const URI = 'http://mobiele.kc-productions.org/deleteItemFromList.php?productID=';
 
 export default {
     async deleteItemFromList(userID, barcode) {

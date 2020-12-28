@@ -126,7 +126,7 @@ export default class CartScreen extends React.Component {
                                 </Swipeable>
                             </View>
                         )}
-                        keyExtractor={(item) => item.barcode}
+                        keyExtractor={(item) => item.barcode.toString()}
                     />
                     <View style={styles.totalCartRow}>
                         <Ionicons name="cart-outline" size={40} color="red"/>
