@@ -38,7 +38,7 @@ class ShoppingListScreen extends Component {
     }
 
     async updateList() {
-        const pro = await ajax.fetchAllProducts();
+        const pro = await ajax.fetchAllProducts(Constants.installationId);
         const isConnected = await connected.CheckConnectivity();
         if (isConnected) {
             const list = await fList.fetchList(Constants.installationId);
@@ -64,14 +64,12 @@ class ShoppingListScreen extends Component {
 
     async addToList(product) {
         const response = await list.addToList(Constants.installationId, product);
-        const lst = await fList.fetchList(Constants.installationId);
-        this.setState({shoppingList: lst.products, query: ''});
+        await this.updateList();
     }
 
     async deleteFromList(product) {
         const response = await dList.deleteItemFromList(Constants.installationId, product);
-        const lst = await fList.fetchList(Constants.installationId);
-        this.setState({shoppingList: lst.products});
+        await this.updateList();
     }
 
     render() {
@@ -82,7 +80,7 @@ class ShoppingListScreen extends Component {
         return (
             <View style={styles.mainContainer}>
                 <View style={styles.statusBar}/>
-                <TopBar page={"Winkel Lijstje"}/>
+                <TopBar page={"Winkellijst"}/>
                 <View style={styles.screenEstate}>
                     <Text style={styles.searchTitle}>
                         Zoek naar een product voor je lijstje!

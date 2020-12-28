@@ -21,7 +21,7 @@ function MyTabs() {
 
                     if (route.name === 'Home') {
                         iconName = focused ? 'home' : 'home-outline';
-                     } else if (route.name === 'Winkel Lijstje') {
+                     } else if (route.name === 'Winkellijst') {
                         iconName = focused ? 'list' : 'list-outline';
                     } else if (route.name === 'Scanner') {
                         iconName = focused ? 'barcode' : 'barcode-outline';
@@ -41,7 +41,7 @@ function MyTabs() {
             }}
         >
             <Tab.Screen name="Home" component={LandingScreen} />
-            <Tab.Screen name="Winkel Lijstje" component={ShoppingListScreen} />
+            <Tab.Screen name="Winkellijst" component={ShoppingListScreen} />
             <Tab.Screen name="Scanner" component={ScannerScreen} />
             <Tab.Screen name="Winkelwagen" component={CartScreen} />
             <Tab.Screen name="Betaling" component={HomeScreen} />

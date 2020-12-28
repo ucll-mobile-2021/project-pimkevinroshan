@@ -1,10 +1,10 @@
 
-const URI = 'http://mobiele.kc-productions.org/getAllProducts.php';
+const URI = 'http://mobiele.kc-productions.org/getAllProducts.php?userID=';
 
 export default {
-    async fetchAllProducts() {
+    async fetchAllProducts(userID) {
         try {
-            let url = URI;
+            let url = URI + userID;
             let response = await fetch(url);
             let responseJsonData = await response.json();
             return responseJsonData;
