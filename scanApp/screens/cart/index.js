@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Alert} from "react-native";
+import {StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Alert, Animated, Button} from "react-native";
 import Constants from 'expo-constants';
 import ajax from "./fetchCart";
 import delAjax from "./deleteItem";
@@ -24,6 +24,8 @@ export default class CartScreen extends React.Component {
         this.state = {
             modalVisible: false,
             cart: [],
+            fadeAnim: new Animated.Value(0),//
+            currentlyOpenSwipeable: null//
         }
     }
 
@@ -73,6 +75,8 @@ export default class CartScreen extends React.Component {
         await this.updateCart();
     }
 
+
+
     render() {
         return (
             <View style={styles.mainContainer}>
@@ -84,15 +88,30 @@ export default class CartScreen extends React.Component {
                         renderItem={({item}) => (
                             <View>
                                 <Swipeable
-                                    renderRightActions={() => {
-                                        return (
-                                            <TouchableOpacity onPress={() => {
-                                                this.deleteFromCart(item.barcode)
-                                            }} style={styles.swipeDelete}>
-                                                <Image source={trashIcon} style={styles.trashIcon}/>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
+                                    renderRightActions={
+                                        (progress, dragX) => {
+                                            const scale = dragX.interpolate({
+                                                inputRange: [-100, 0],
+                                                outputRange: [0.7, 0]
+                                            })
+
+                                            return(
+                                                <TouchableOpacity style={{ backgroundColor: 'white', justifyContent: 'center' }}
+                                                  onPress={() => {
+                                                      this.deleteFromCart(item.barcode)
+                                                  }
+                                                  }
+                                                >
+                                                    <Animated.Image source={trashIcon} style={{
+                                                        transform: [{ scale }]
+                                                    }}>
+                                                    </Animated.Image>
+
+                                                </TouchableOpacity>
+                                            );
+                                        }
+                                    }
+
                                 >
                                     <View style={styles.row}>
                                         <View style={styles.iconContainer}>
@@ -146,7 +165,9 @@ export default class CartScreen extends React.Component {
                 </View>
             </View>
         );
+        
     }
+    
 }
 
 
@@ -274,16 +295,13 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "bold",
     },
-    swipeDelete: {
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "red",
-        width: 100,
+    rightSwipeItem: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingLeft: 20
     },
-    trashIcon: {
-        height: 60,
-        width: 60,
-    },
+
+
     screenEstate: {
         flex: 1,
     },
