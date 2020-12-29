@@ -16,7 +16,7 @@ import TopBar from "../../components/TopBar";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import connected from "../checkConnectivity";
 
-const basketIcon = require("../cart/basket.png");
+const listIcon = require("./list.png");
 const trashIcon = require("../cart/trash.png");
 
 class ShoppingListScreen extends Component {
@@ -140,16 +140,13 @@ class ShoppingListScreen extends Component {
                                     >
                                         <View style={styles.row}>
                                             <View style={styles.iconContainer}>
-                                                <Image source={basketIcon} style={styles.icon}/>
+                                                <Image source={listIcon} style={styles.icon}/>
                                             </View>
 
                                             <View style={styles.info}>
                                                     <Text style={styles.items}>{item.description}</Text>
                                             </View>
-                                            <View style={styles.total}>
-                                                <Text style={styles.unitprice}>{item.unitprice}</Text>
-                                                <Text style={styles.price}>€{item.total}</Text>
-                                            </View>
+
                                         </View>
                                     </Swipeable>
                                 </View>
@@ -220,8 +217,8 @@ const styles = StyleSheet.create({
     },
     icon: {
         tintColor: "#fff",
-        height: 22,
-        width: 22,
+        height: 30,
+        width: 30,
     },
     addOneTouchable: {
         left: 34,
