@@ -5,7 +5,7 @@ import {
     Text,
     TouchableOpacity,
     View,
-    FlatList, Image
+    FlatList, Image, Animated
 } from 'react-native';
 import Constants from 'expo-constants';
 import ajax from './fetchAllProducts';
@@ -114,15 +114,29 @@ class ShoppingListScreen extends Component {
                             renderItem={({item}) => (
                                 <View>
                                     <Swipeable
-                                        renderRightActions={() => {
-                                            return (
-                                                <TouchableOpacity onPress={() => {
-                                                    this.deleteFromList(item.id)
-                                                }} style={styles.swipeDelete}>
-                                                    <Image source={trashIcon} style={styles.trashIcon}/>
-                                                </TouchableOpacity>
-                                            )
-                                        }}
+                                        renderRightActions={
+                                            (progress, dragX) => {
+                                                const scale = dragX.interpolate({
+                                                    inputRange: [-100, 0],
+                                                    outputRange: [0.7, 0]
+                                                })
+
+                                                return(
+                                                    <TouchableOpacity style={{ backgroundColor: 'white', justifyContent: 'center' }}
+                                                                      onPress={() => {
+                                                                          this.deleteFromList(item.id);
+                                                                      }
+                                                                      }
+                                                    >
+                                                        <Animated.Image source={trashIcon} style={{
+                                                            transform: [{ scale }]
+                                                        }}>
+                                                        </Animated.Image>
+
+                                                    </TouchableOpacity>
+                                                );
+                                            }
+                                        }
                                     >
                                         <View style={styles.row}>
                                             <View style={styles.iconContainer}>
