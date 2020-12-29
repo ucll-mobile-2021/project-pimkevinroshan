@@ -16,6 +16,7 @@ const basketIcon = require("./basket.png");
 const plusIcon = require("./plus.png");
 const minusIcon = require("./minus.png");
 const trashIcon = require("./trash.png");
+const easterEgg = require("./easterEgg.png");
 
 export default class CartScreen extends React.Component {
 
@@ -23,9 +24,7 @@ export default class CartScreen extends React.Component {
         super(props)
         this.state = {
             modalVisible: false,
-            cart: [],
-            fadeAnim: new Animated.Value(0),//
-            currentlyOpenSwipeable: null//
+            cart: []
         }
     }
 
@@ -75,8 +74,23 @@ export default class CartScreen extends React.Component {
         await this.updateCart();
     }
 
+    renderLeftActions = (progress, dragX) => {
+        const scale = dragX.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [0, 0.7]
+        })
 
+        return (
+            <TouchableOpacity style={{backgroundColor: 'white', justifyContent: 'center'}}
+            >
+                <Animated.Image source={easterEgg} style={{
+                    transform: [{scale}]
+                }}>
+                </Animated.Image>
 
+            </TouchableOpacity>
+        );
+    }
     render() {
         return (
             <View style={styles.mainContainer}>
@@ -111,7 +125,7 @@ export default class CartScreen extends React.Component {
                                             );
                                         }
                                     }
-
+                                    renderLeftActions={this.renderLeftActions}
                                 >
                                     <View style={styles.row}>
                                         <View style={styles.iconContainer}>
