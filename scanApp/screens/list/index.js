@@ -129,7 +129,6 @@ class ShoppingListScreen extends Component {
                                                                       }
                                                     >
                                                         <Animated.Image source={trashIcon} style={{
-                                                            tintColor: "#fe0127",
                                                             transform: [{ scale }]
                                                         }}>
                                                         </Animated.Image>
