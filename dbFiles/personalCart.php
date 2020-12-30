@@ -2,7 +2,7 @@
 $userID = $_GET["userID"];
 
 require("database/database-connect.php");
-$stmt = $mysqli->prepare("SELECT p.id, p.barcode, p.description, p.price, p.unitPrice, c.quantity FROM `cart` c INNER JOIN `products` p on c.productID = p.id WHERE userID = ? order by c.id");
+$stmt = $mysqli->prepare("SELECT p.id, p.barcode, p.description, p.price, p.unitPrice, c.quantity FROM `cart` c INNER JOIN `products` p on c.productID = p.id WHERE userID = ? AND c.payed=0 order by c.id");
 $stmt->bind_param('s', $userID);
 $stmt->execute();
 $result = $stmt->get_result();

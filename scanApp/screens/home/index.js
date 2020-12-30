@@ -32,7 +32,7 @@ const HomeScreen = ({}) => {
                     logoSize={100}
                     logoBackgroundColor='transparent'
                     backgroundColor='transparent'
-                    value={Constants.installationId}
+                    value={'http://mobiele.kc-productions.org/handleUser.php?userID=' + Constants.installationId}
                     size={Dimensions.get('window').width - 30}
                 />
             </View>

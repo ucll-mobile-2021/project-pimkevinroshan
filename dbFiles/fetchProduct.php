@@ -3,7 +3,7 @@ $productID = $_GET["productID"];
 $userID = $_GET["userID"];
 
 require("database/database-connect.php");
-$stmt = $mysqli->prepare("SELECT p.id, p.barcode, p.description, p.price, p.unitPrice, c.quantity FROM `products` p LEFT JOIN (select * from `cart` WHERE userid = ?) c ON p.id = c.productID WHERE p.barcode= ?");
+$stmt = $mysqli->prepare("SELECT p.id, p.barcode, p.description, p.price, p.unitPrice, c.quantity FROM `products` p LEFT JOIN (select * from `cart` WHERE userid = ? AND payed=0) c ON p.id = c.productID WHERE p.barcode= ?");
 $stmt->bind_param('si', $userID, $productID);
 $stmt->execute();
 $result = $stmt->get_result();

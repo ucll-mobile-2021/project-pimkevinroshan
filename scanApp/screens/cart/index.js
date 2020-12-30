@@ -125,7 +125,7 @@ export default class CartScreen extends React.Component {
                                             );
                                         }
                                     }
-                                    renderLeftActions={this.renderLeftActions}
+                                    //renderLeftActions={this.renderLeftActions}
                                 >
                                     <View style={styles.row}>
                                         <View style={styles.iconContainer}>

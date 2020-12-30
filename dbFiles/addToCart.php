@@ -8,7 +8,7 @@ $stmt = $mysqli->prepare("DELETE FROM `shoppinglist` WHERE productID = ? AND use
 $stmt->bind_param('is', $productID, $userID);
 $stmt->execute();
 
-$stmt = $mysqli->prepare("SELECT * FROM `cart` WHERE productID = ? AND userID = ?");
+$stmt = $mysqli->prepare("SELECT * FROM `cart` WHERE productID = ? AND userID = ? AND payed=0");
 $stmt->bind_param('is', $productID, $userID);
 $stmt->execute();
 $result = $stmt->get_result();
