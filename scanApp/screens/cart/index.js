@@ -4,9 +4,7 @@ import Constants from 'expo-constants';
 import ajax from "./fetchCart";
 import delAjax from "./deleteItem";
 import updateOneQuantityAjax from "./updateQuantityByOne";
-//import { GestureHandler } from 'expo'
-//import * as Swipeable from 'react-native-gesture-handler';
-//import SwipeItem from "./swipeable";
+import Modal from 'react-native-modal';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import TopBar from "../../components/TopBar";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -91,6 +89,10 @@ export default class CartScreen extends React.Component {
             </TouchableOpacity>
         );
     }
+
+    hideModal = () => this.setState({modalVisible: false})
+
+
     render() {
         return (
             <View style={styles.mainContainer}>
@@ -108,7 +110,6 @@ export default class CartScreen extends React.Component {
                                                 inputRange: [-100, 0],
                                                 outputRange: [0.7, 0]
                                             })
-
                                             return(
                                                 <TouchableOpacity style={{ backgroundColor: 'white', justifyContent: 'center' }}
                                                   onPress={() => {
@@ -117,7 +118,8 @@ export default class CartScreen extends React.Component {
                                                   }
                                                 >
                                                     <Animated.Image source={trashIcon} style={{
-                                                        transform: [{ scale }]
+                                                        tintColor: "#fe0127",
+                                                        transform: [{ scale }],
                                                     }}>
                                                     </Animated.Image>
 
@@ -129,7 +131,12 @@ export default class CartScreen extends React.Component {
                                 >
                                     <View style={styles.row}>
                                         <View style={styles.iconContainer}>
-                                            <Image source={basketIcon} style={styles.icon}/>
+                                            <TouchableOpacity onPress={() => {
+                                                this.setState({ modalVisible: true});
+                                            }}>
+                                                <Image source={basketIcon} style={styles.icon}/>
+                                            </TouchableOpacity>
+
                                         </View>
 
                                         <View style={styles.info}>
@@ -157,6 +164,19 @@ export default class CartScreen extends React.Component {
                                         </View>
                                     </View>
                                 </Swipeable>
+                                <Modal
+                                    style={styles.modal}
+                                    isVisible={this.state.modalVisible}
+                                    shouldCloseOnOverlayClick={false}
+                                >
+                                    <Text>CALORIES: 6900 Kcal</Text>
+                                    <TouchableOpacity onPress={() => {
+                                        this.hideModal();
+                                    }} >
+                                        <Text style={{color: "red"}}>CLICK ME TO CLOSE</Text>
+                                    </TouchableOpacity>
+                                </Modal>
+
                             </View>
                         )}
                         keyExtractor={(item) => item.barcode.toString()}
@@ -199,7 +219,7 @@ const styles = StyleSheet.create({
         margin: 0,
         backgroundColor: 'white',
         height: 200,
-        flex: 0,
+        flex: 1,
         top: '35%',
         position: 'absolute',
         width: '100%'
