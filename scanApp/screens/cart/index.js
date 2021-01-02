@@ -168,7 +168,7 @@ export default class CartScreen extends React.Component {
                                             style={styles.modal}
                                             isVisible={this.state.modalVisible}
                                             onBackdropPress={this.hideModal}
-                                            backdropOpacity={0.4}
+                                            backdropOpacity={0.1}
                                         >
 
                                             <View style={styles.extraInfoContainer}>
@@ -389,8 +389,8 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: 'flex-end',
-        marginTop: 20,
-        marginBottom: 10,
+        marginTop: 10,
+        marginBottom: 12 ,
         marginRight: 50,
         height: 50,
         width:50,
