@@ -9,19 +9,20 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import TopBar from "../../components/TopBar";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import connected from "../checkConnectivity";
-
+import {Dimensions} from 'react-native';
 const basketIcon = require("./basket.png");
 const plusIcon = require("./plus.png");
 const minusIcon = require("./minus.png");
 const trashIcon = require("./trash.png");
 const easterEgg = require("./easterEgg.png");
+const backButton = require("./back-button.png");
 
 export default class CartScreen extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            modalVisible: false,
+            modalVisible: true,
             cart: []
         }
     }
@@ -168,12 +169,18 @@ export default class CartScreen extends React.Component {
                                     isVisible={this.state.modalVisible}
                                     shouldCloseOnOverlayClick={false}
                                 >
-                                    <Text>CALORIES: 6900 Kcal</Text>
                                     <TouchableOpacity onPress={() => {
+                                        console.log("pressed");
                                         this.hideModal();
                                     }} >
-                                        <Text style={{color: "red"}}>CLICK ME TO CLOSE</Text>
+                                        <Image source={backButton} style={styles.backButton}></Image>
                                     </TouchableOpacity>
+                                    <View style={styles.extraInfoContainer}>
+                                        <Text style={styles.extraInfoHeading}>Aanvullend Informatie</Text>
+                                        <Text style={styles.itemDescription}>{item.description}</Text>
+                                        <Text style={styles.calories}>69 Kcal ({item.items} porties = 500 Kcal)</Text>
+                                    </View>
+
                                 </Modal>
 
                             </View>
@@ -214,15 +221,7 @@ export default class CartScreen extends React.Component {
 
 //onPress={() => this.deleteFromCart(item.barcode)}
 const styles = StyleSheet.create({
-    modal: {
-        margin: 0,
-        backgroundColor: 'white',
-        height: 200,
-        flex: 1,
-        top: '35%',
-        position: 'absolute',
-        width: '100%'
-    },
+
     mainContainer: {
         flex: 1,
         backgroundColor: "#fff",
@@ -342,4 +341,60 @@ const styles = StyleSheet.create({
         backgroundColor: '#fe0127',
         height: Constants.statusBarHeight
     },
+    modal: {
+        margin: 0,
+        backgroundColor: 'white',
+        height: 200,
+        flex: 1,
+        top: '35%',
+        position: 'absolute',
+        width: '100%'
+    },
+    extraInfoContainer: {
+        alignItems: "center",
+        margin: 0,
+        backgroundColor: 'white',
+        height: 200,
+        flex: 0,
+        bottom: 0,
+        position: 'absolute',
+        width: '100%'
+    },
+    extraInfoHeading: {
+        width: "80%",
+        fontSize: 30,
+        fontWeight: "bold"
+    },
+    itemDescription: {
+        fontSize: 25,
+        position: 'absolute',
+        top: 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width:'90%', // add width
+        borderBottomColor: 'black',
+        borderBottomWidth: 2,
+    },
+    calories: {
+        fontSize: 25,
+        position: 'absolute',
+        top: 85,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width:'90%' // add width
+    },
+    backButton: {
+        tintColor: "#fe0127",
+        justifyContent: "center",
+        alignItems: "center",
+        left: 50,
+        height: 38,
+        width: 38,
+        backgroundColor: "blue"
+    }
+
+
+
+
+
 });
