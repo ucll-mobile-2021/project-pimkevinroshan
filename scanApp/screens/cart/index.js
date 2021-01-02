@@ -22,7 +22,7 @@ export default class CartScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalVisible: false,
+            modalVisible: true,
             selectedProduct: [],
             cart: []
         }
@@ -172,11 +172,10 @@ export default class CartScreen extends React.Component {
                                         >
 
                                             <View style={styles.extraInfoContainer}>
-                                                <Text style={styles.extraInfoHeading}>Aanvullend Informatie</Text>
+                                                <Text style={styles.extraInfoHeading}>Aanvullende Informatie</Text>
                                                 <Text style={styles.itemDescription}>{this.state.selectedProduct.description}</Text>
-                                                <Text style={styles.calories}>{this.state.selectedProduct.calories > 0 ? this.state.selectedProduct.calories : "Deze product bevat geen aanvullend informatie."}</Text>
+                                                <Text style={styles.calories}>Sinds de introductie in 1971 is de STABILO BOSS Original de favoriet en de best verkopende markeerstift in Europa.</Text>
                                                 <TouchableOpacity onPress={() => {
-                                                    console.log("pressed");
                                                     this.hideModal();
                                                 }} >
                                                     <Image source={backButton} style={styles.backButton}></Image>
@@ -347,24 +346,22 @@ const styles = StyleSheet.create({
     },
     modal: {
         margin: 0,
+        backgroundColor: 'white',
         height: 200,
         flex: 1,
         top: '35%',
         position: 'absolute',
         width: '100%',
-
     },
     extraInfoContainer: {
         flexDirection: 'column',
         margin: 0,
         backgroundColor: 'white',
-        height: 200,
-        flex: 0,
+        height: 350,
         bottom: 0,
     },
     extraInfoHeading: {
         alignSelf: 'center',
-        width: "80%",
         fontSize: 30,
         fontWeight: "bold"
     },
@@ -392,7 +389,7 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: 'flex-end',
-        marginTop: 10,
+        marginTop: 30,
         marginRight: 50,
         height: 50,
         width:50,
