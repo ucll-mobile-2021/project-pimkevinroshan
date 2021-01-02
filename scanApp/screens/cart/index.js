@@ -22,7 +22,7 @@ export default class CartScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalVisible: true,
+            modalVisible: false,
             selectedProduct: [],
             cart: []
         }
@@ -174,7 +174,7 @@ export default class CartScreen extends React.Component {
                                             <View style={styles.extraInfoContainer}>
                                                 <Text style={styles.extraInfoHeading}>Aanvullende Informatie</Text>
                                                 <Text style={styles.itemDescription}>{this.state.selectedProduct.description}</Text>
-                                                <Text style={styles.calories}>Sinds de introductie in 1971 is de STABILO BOSS Original de favoriet en de best verkopende markeerstift in Europa.</Text>
+                                                <Text style={styles.calories}>{this.state.selectedProduct.info === undefined ? "Dit product bevat geen aanvullende informatie." : this.state.selectedProduct.info }</Text>
                                                 <TouchableOpacity onPress={() => {
                                                     this.hideModal();
                                                 }} >
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         margin: 0,
         backgroundColor: 'white',
-        height: 350,
+        //height: 350,
         bottom: 0,
     },
     extraInfoHeading: {
@@ -389,7 +389,8 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: 'flex-end',
-        marginTop: 30,
+        marginTop: 20,
+        marginBottom: 10,
         marginRight: 50,
         height: 50,
         width:50,
