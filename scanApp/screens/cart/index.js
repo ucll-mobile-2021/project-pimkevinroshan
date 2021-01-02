@@ -22,7 +22,8 @@ export default class CartScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalVisible: true,
+            modalVisible: false,
+            selectedProduct: [],
             cart: []
         }
     }
@@ -132,6 +133,7 @@ export default class CartScreen extends React.Component {
                                     <View style={styles.row}>
                                         <View style={styles.iconContainer}>
                                             <TouchableOpacity onPress={() => {
+                                                this.setState({selectedProduct: item});
                                                 this.setState({ modalVisible: true});
                                             }}>
                                                 <Image source={basketIcon} style={styles.icon}/>
@@ -162,26 +164,28 @@ export default class CartScreen extends React.Component {
                                             <Text style={styles.unitprice}>{item.unitprice}</Text>
                                             <Text style={styles.price}>€{item.total}</Text>
                                         </View>
-                                    </View>
-                                </Swipeable>
-                                <Modal
-                                    style={styles.modal}
-                                    isVisible={this.state.modalVisible}
-                                    shouldCloseOnOverlayClick={false}
-                                >
-                                    <TouchableOpacity onPress={() => {
-                                        console.log("pressed");
-                                        this.hideModal();
-                                    }} >
-                                        <Image source={backButton} style={styles.backButton}></Image>
-                                    </TouchableOpacity>
-                                    <View style={styles.extraInfoContainer}>
-                                        <Text style={styles.extraInfoHeading}>Aanvullend Informatie</Text>
-                                        <Text style={styles.itemDescription}>{item.description}</Text>
-                                        <Text style={styles.calories}>69 Kcal ({item.items} porties = 500 Kcal)</Text>
+                                        <Modal
+                                            style={styles.modal}
+                                            isVisible={this.state.modalVisible}
+                                            onBackdropPress={this.hideModal}
+                                            backdropOpacity={0.4}
+                                        >
+
+                                            <View style={styles.extraInfoContainer}>
+                                                <Text style={styles.extraInfoHeading}>Aanvullend Informatie</Text>
+                                                <Text style={styles.itemDescription}>{this.state.selectedProduct.description}</Text>
+                                                <Text style={styles.calories}>{this.state.selectedProduct.calories > 0 ? this.state.selectedProduct.calories : "Deze product bevat geen aanvullend informatie."}</Text>
+                                                <TouchableOpacity onPress={() => {
+                                                    console.log("pressed");
+                                                    this.hideModal();
+                                                }} >
+                                                    <Image source={backButton} style={styles.backButton}></Image>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </Modal>
                                     </View>
 
-                                </Modal>
+                                </Swipeable>
 
                             </View>
                         )}
@@ -343,54 +347,57 @@ const styles = StyleSheet.create({
     },
     modal: {
         margin: 0,
-        backgroundColor: 'white',
         height: 200,
         flex: 1,
         top: '35%',
         position: 'absolute',
-        width: '100%'
+        width: '100%',
+
     },
     extraInfoContainer: {
-        alignItems: "center",
+        flexDirection: 'column',
         margin: 0,
         backgroundColor: 'white',
         height: 200,
         flex: 0,
         bottom: 0,
-        position: 'absolute',
-        width: '100%'
     },
     extraInfoHeading: {
+        alignSelf: 'center',
         width: "80%",
         fontSize: 30,
         fontWeight: "bold"
     },
     itemDescription: {
+        marginTop: 5,
+        marginLeft: 10,
         fontSize: 25,
-        position: 'absolute',
-        top: 40,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        //position: 'absolute',
+        //top: 40,
+        //flexDirection: 'row',
+        //justifyContent: 'space-between',
         width:'90%', // add width
         borderBottomColor: 'black',
         borderBottomWidth: 2,
     },
     calories: {
-        fontSize: 25,
-        position: 'absolute',
-        top: 85,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width:'90%' // add width
+        fontSize: 15,
+        marginLeft: 10,
+        marginTop: 10,
+        //position: 'absolute',
+        //top: 85,
+        //flexDirection: 'row',
+        //justifyContent: 'space-between',
+        //width:'90%' // add width
     },
     backButton: {
-        tintColor: "#fe0127",
-        justifyContent: "center",
-        alignItems: "center",
-        left: 50,
-        height: 38,
-        width: 38,
-        backgroundColor: "blue"
+        alignSelf: 'flex-end',
+        marginTop: 10,
+        marginRight: 50,
+        height: 50,
+        width:50,
+        flexDirection: 'column',
+        tintColor: '#fe0127',
     }
 
 
