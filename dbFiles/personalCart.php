@@ -2,7 +2,7 @@
 $userID = $_GET["userID"];
 
 require("database/database-connect.php");
-$stmt = $mysqli->prepare("SELECT p.id, p.barcode, p.description, p.price, p.unitPrice, c.quantity FROM `cart` c INNER JOIN `products` p on c.productID = p.id WHERE userID = ? AND c.payed=0 order by c.id");
+$stmt = $mysqli->prepare("SELECT p.id, p.barcode, p.description, p.price, p.unitPrice, p.info, c.quantity FROM `cart` c INNER JOIN `products` p on c.productID = p.id WHERE userID = ? AND c.payed=0 order by c.id");
 $stmt->bind_param('s', $userID);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -21,10 +21,10 @@ while ($product = $result->fetch_assoc()) {
   $itemCount ++;
   $price = $product['quantity'] * $product['price'];
   $totalPrice += $price;
-  $cartContents = addToCart($cartContents, $product['id'], $product['barcode'], $product['quantity'], $product['description'], number_format((float)$price, 2, ',', ''), $product['unitPrice']);
+  $cartContents = addToCart($cartContents, $product['id'], $product['barcode'], $product['quantity'], $product['description'], number_format((float)$price, 2, ',', ''), $product['unitPrice'], $product['info']);
 }
 
-function addToCart($cartContents, $id, $barcode, $items, $description, $total, $unitprice) {
+function addToCart($cartContents, $id, $barcode, $items, $description, $total, $unitprice, $info) {
   $item = new \stdClass();
   $item->id= $id;
   $item->barcode = $barcode;
@@ -32,6 +32,7 @@ function addToCart($cartContents, $id, $barcode, $items, $description, $total, $
   $item->description = $description;
   $item->total = $total;
   $item->unitprice = $unitprice;
+    $item->info = $info;
   array_push($cartContents, $item);
   return $cartContents;
 }
