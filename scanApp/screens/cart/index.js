@@ -164,24 +164,6 @@ export default class CartScreen extends React.Component {
                                             <Text style={styles.unitprice}>{item.unitprice}</Text>
                                             <Text style={styles.price}>€{item.total}</Text>
                                         </View>
-                                        <Modal
-                                            style={styles.modal}
-                                            isVisible={this.state.modalVisible}
-                                            onBackdropPress={this.hideModal}
-                                            backdropOpacity={0.1}
-                                        >
-
-                                            <View style={styles.extraInfoContainer}>
-                                                <Text style={styles.extraInfoHeading}>Aanvullende Informatie</Text>
-                                                <Text style={styles.itemDescription}>{this.state.selectedProduct.description}</Text>
-                                                <Text style={styles.calories}>{this.state.selectedProduct.info === undefined ? "Dit product bevat geen aanvullende informatie." : this.state.selectedProduct.info }</Text>
-                                                <TouchableOpacity onPress={() => {
-                                                    this.hideModal();
-                                                }} >
-                                                    <Image source={backButton} style={styles.backButton}></Image>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </Modal>
                                     </View>
 
                                 </Swipeable>
@@ -206,7 +188,26 @@ export default class CartScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+                <Modal
+                    style={styles.modal}
+                    isVisible={this.state.modalVisible}
+                    onBackdropPress={this.hideModal}
+                    backdropOpacity={0.1}
+                >
+
+                    <View style={styles.extraInfoContainer}>
+                        <Text style={styles.extraInfoHeading}>Aanvullende Informatie</Text>
+                        <Text style={styles.itemDescription}>{this.state.selectedProduct.description}</Text>
+                        <Text style={styles.calories}>{this.state.selectedProduct.info === undefined ? "Dit product bevat geen aanvullende informatie." : this.state.selectedProduct.info }</Text>
+                        <TouchableOpacity onPress={() => {
+                            this.hideModal();
+                        }} >
+                            <Image source={backButton} style={styles.backButton}></Image>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View>
+
         );
         
     }
