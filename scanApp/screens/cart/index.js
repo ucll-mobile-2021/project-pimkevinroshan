@@ -9,7 +9,6 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import TopBar from "../../components/TopBar";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import connected from "../checkConnectivity";
-import {Dimensions} from 'react-native';
 const basketIcon = require("./basket.png");
 const plusIcon = require("./plus.png");
 const minusIcon = require("./minus.png");
@@ -189,10 +188,10 @@ export default class CartScreen extends React.Component {
                     </View>
                 </View>
                 <Modal
-                    style={styles.modal}
+                    style={styles.modalAanvullendInformatie}
                     isVisible={this.state.modalVisible}
                     onBackdropPress={this.hideModal}
-                    backdropOpacity={0.1}
+                    backdropOpacity={0.4}
                 >
 
                     <View style={styles.extraInfoContainer}>
@@ -345,7 +344,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fe0127',
         height: Constants.statusBarHeight
     },
-    modal: {
+    modalAanvullendInformatie: {
         margin: 0,
         backgroundColor: 'white',
         height: 200,
