@@ -103,7 +103,7 @@ $mysqli->close();
                 <td>€<? echo number_format((float)$product["price"], 2, ',', '');?></td>
             </tr>
         <?}
-        if ($user['points'] != null){
+        if ($user['points'] >= null){
             $newPoints = round($totalCost) + $user['points'];
         }
         ?>
